@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Демонстрация должности — Vysotsky Estate</title>
+  <style>
+    /* === БРЕНД ===
+       Замените файл /assets/brand-font.woff2 на ваш шрифт и обновите имя в font-family ниже.
+       Цвет --primary замените на точное фирменное значение. */
+    @font-face {
+      font-family: 'BrandFont';
+      src: url('assets/brand-font.woff2') format('woff2');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+    :root{
+      --bg:#f5f7fb;        /* светло-серый фон */
+      --text:#101828;      /* основной текст */
+      --muted:#667085;     /* вторичный текст */
+      --primary:#2b6bff;   /* ЗАМЕНИТЕ на фирменный синий */
+      --primary-weak:#e7efff;
+      --card:#ffffff;      /* белые карточки */
+      --border:#e6e9f0;    /* светлые бордеры */
+      --radius:16px;
+      --shadow:0 6px 18px rgba(16,24,40,.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 BrandFont, system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,"Helvetica Neue",Arial}
+    img{max-width:100%;height:auto;border-radius:12px}
+    a{color:var(--primary)}
+
+    /* Шапка */
+    header{position:sticky;top:0;z-index:20;background:#fff;border-bottom:1px solid var(--border);box-shadow:0 2px 8px rgba(16,24,40,.04)}
+    .hdr{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{width:36px;height:36px;border-radius:999px;background:#101828;display:grid;place-items:center;color:#fff;font-weight:700}
+    .brand .sub{font-size:12px;color:#98a2b3;margin-top:2px}
+    .contact{display:flex;align-items:flex-end;gap:4px;color:#475467}
+
+    /* Контент */
+    .container{max-width:1200px;margin:0 auto;padding:20px}
+    .wrap{display:grid;grid-template-columns:300px 1fr;gap:20px}
+    @media (max-width: 980px){.wrap{grid-template-columns:1fr}}
+
+    /* Левая колонка: прогресс + меню */
+    .left{position:sticky;top:84px;align-self:start}
+    .panel{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px}
+    .panel h2{font-size:20px;margin:4px 8px 10px}
+    .progress-box{padding:8px 10px}
+    .progress-label{display:flex;justify-content:space-between;align-items:center;color:#475467;font-size:14px;margin-bottom:8px}
+    .progress{height:8px;border-radius:999px;background:var(--primary-weak);overflow:hidden}
+    .progress>span{display:block;height:100%;width:21%;background:var(--primary)}
+
+    .toc{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+    .toc button{appearance:none;background:transparent;border:0;text-align:left;padding:10px 12px;border-radius:12px;display:flex;align-items:center;gap:10px;cursor:pointer;color:#475467}
+    .toc button[aria-current="step"]{background:#f0f4ff;color:#1f3b8f;box-shadow:inset 0 0 0 1px #d7e2ff}
+    .toc .icon{width:22px;height:22px;border-radius:6px;background:#eef2f7;display:grid;place-items:center;color:#3b82f6}
+    .toc .icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .toc button[data-read="1"]::after{content:'✓';margin-left:auto;color:#16a34a;font-weight:700}
+
+    /* Правая колонка: карточка контента */
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px}
+    .card h1{font-size:28px;line-height:1.2;margin:0 0 16px}
+    .callout{display:flex;gap:12px;align-items:flex-start;background:#fff7e6;border:1px solid #ffecbf;border-radius:12px;padding:12px 14px;margin:18px 0;color:#7a4b00}
+    .callout .badge{flex:0 0 auto;width:28px;height:28px;border-radius:999px;display:grid;place-items:center;background:#ffe8b0}
+    .muted{color:var(--muted)}
+    .hint{font-size:14px;color:#475467;margin-top:8px}
+
+    /* Низ страницы: навигация */
+    .nav{position:sticky;bottom:0;margin-top:18px;background:transparent}
+    .nav .bar{display:flex;gap:12px;justify-content:flex-end;align-items:center}
+    .btn{appearance:none;border:0;border-radius:12px;padding:12px 18px;font-weight:600;cursor:pointer}
+    .btn.primary{background:var(--primary);color:#fff}
+    .btn.ghost{background:#eef2ff;color:#1f3b8f}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* Хлебные крошки заголовка блока */
+    .crumbs{display:flex;align-items:center;gap:8px;color:#667085;font-size:14px;margin-bottom:6px}
+
+    /* Икон-стринг в списке слева */
+    .toc .text{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+    /* Блок результатов тестов (по умолчанию скрыт) */
+    #test-results{display:none;margin-top:16px;padding:12px;border-radius:12px;border:1px solid var(--border);background:#fafbff;font-size:14px}
+    #test-results.show{display:block}
+    #test-results .ok{color:#16a34a}
+    #test-results .fail{color:#dc2626}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="hdr">
+      <div class="brand">
+        <div class="logo">VE</div>
+        <div>
+          <div style="font-weight:700">Vysotsky Estate на Селигерской</div>
+          <div class="sub">Добро пожаловать в команду</div>
+        </div>
+      </div>
+      <div class="contact">
+        <div>Яна Артюшева</div>
+        <div>·</div>
+        <div>Тел.: +79651101050</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="wrap" id="app">
+      <!-- Левая панель -->
+      <aside class="left">
+        <div class="panel">
+          <h2>Демонстрация должности</h2>
+          <div class="progress-box">
+            <div class="progress-label"><span>Прогресс прохождения</span><span id="progressN">0%</span></div>
+            <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+          </div>
+          <div class="toc" id="toc"></div>
+          <div style="padding:10px 12px;color:#98a2b3;font-size:13px">
+            <div><a href="#" rel="nofollow">О платформе</a></div>
+            <div><a href="#" rel="nofollow">Политика конфиденциальности</a></div>
+          </div>
+          <div id="test-results" aria-live="polite"></div>
+        </div>
+      </aside>
+
+      <!-- Правая колонка: контент шага -->
+      <main id="stage" class="card" aria-live="polite"></main>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        // === ИКОНКИ SVG ===
+        const icons = {
+          doc: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/></svg>',
+          clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
+          office: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="8" height="18" rx="1"/><rect x="14" y="8" width="6" height="13" rx="1"/><path d="M8 7h0M8 11h0M8 15h0M17 12h0M17 16h0"/></svg>',
+          team: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="3"/><circle cx="16" cy="8" r="3"/><path d="M3 20c0-3 3-5 5-5s5 2 5 5"/><path d="M11 20c0-3 3-5 5-5s5 2 5 5"/></svg>',
+          pin: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s7-6 7-12a7 7 0 1 0-14 0c0 6 7 12 7 12z"/><circle cx="12" cy="10" r="3"/></svg>',
+          bulb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12c1 1 1 2 1 3h6c0-1 0-2 1-3a7 7 0 0 0-4-12z"/></svg>',
+          shake: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12l3-3a2 2 0 0 1 3 3l-6 6-3-3-4 4"/></svg>',
+          chat: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"/></svg>',
+          target: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>',
+          gift: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12v8H4v-8M2 8h20v4H2z"/><path d="M12 8v12"/><path d="M12 8c-1.5 0-4-1-4-3s2.5-2 4 1c1.5-3 4-2 4 0s-2.5 2-4 2z"/></svg>',
+          book: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2z"/><path d="M4 15h16"/></svg>',
+          person: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3"/><path d="M4 20c0-4 4-6 8-6s8 2 8 6"/></svg>',
+          arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/><path d="M13 5l7 7-7 7"/></svg>'
+        };
+        const icon = (name)=> icons[name] || icons.doc;
+
+        // === ДАННЫЕ ШАГОВ ===
+        const steps = [
+          {
+            id:'welcome',
+            title:'Добро пожаловать в компанию Vysotsky Estate на Селигерской!',
+            icon:'doc',
+            html:`
+              <div class="crumbs">Давайте знакомиться</div>
+              <h1>Добро пожаловать в компанию Vysotsky Estate на Селигерской!</h1>
+              <img src="assets/welcome-hero.jpg" alt="Фото офиса/руководителя"/>
+              <div class="callout"><div class="badge">✓</div>
+                <div>
+                  <strong>Всего через 20 минут</strong> можно получить <strong>предложение работать</strong> в нашей команде. Для этого достаточно спокойно пройти демонстрацию до конца и ответить на вопросы.
+                </div>
+              </div>
+              <p>Вы откликнулись на вакансию в <strong>отдел продаж недвижимости</strong>, а значит планируете стать частью большой команды. Это отлично.</p>
+              <h3>О чём демонстрация?</h3>
+              <p>Мы расскажем, что мы делаем, кто нам нужен и на каких условиях. Вы поймёте, насколько вам подходит профессия агента по недвижимости. Затем встретимся и обсудим, <strong>как начать зарабатывать на рынке недвижимости</strong>.</p>
+              <h3>Далее вы узнаете:</h3>
+              <ul>
+                <li>✅ Как мы выглядим и где находимся;</li>
+                <li>✅ Кто наши клиенты и за что они нам платят;</li>
+                <li>✅ Что мы делаем и что предстоит делать вам;</li>
+                <li>✅ Кто нам нужен и какие требования;</li>
+                <li>💰 На каких условиях (система бонусов и мотивации);</li>
+                <li>✅ Пару важных акцентов в конце.</li>
+              </ul>
+            `
+          },
+          { id:'history', icon:'clock', title:'Наша история', html:`<h1>Наша история</h1><p class="muted">Здесь добавьте текст/фото. <img src="assets/history.jpg" alt="История"/></p>` },
+          { id:'office', icon:'office', title:'Наш офис', html:`<h1>Наш офис</h1><p class="muted">Фото и карта. <img src="assets/office.jpg" alt="Офис"/></p>` },
+          { id:'team', icon:'team', title:'Наша команда', html:`<h1>Наша команда</h1><img src="assets/team.jpg" alt="Команда"/>` },
+          { id:'geo', icon:'pin', title:'Где мы находимся? География бизнеса', html:`<h1>География бизнеса</h1><p class="muted">Карта/направления.</p>` },
+          { id:'why', icon:'bulb', title:'Почему именно сфера недвижимости?', html:`<h1>Почему недвижимость</h1><p class="muted">Аргументы и преимущества.</p>` },
+          { id:'withwhom', icon:'shake', title:'С кем вы будете работать?', html:`<h1>С кем вы будете работать</h1><p class="muted">Смежные отделы, наставники.</p>` },
+          { id:'reviews', icon:'chat', title:'Что клиенты говорят о нас?', html:`<h1>Отзывы клиентов</h1><img src="assets/reviews.jpg" alt="Отзывы"/>` },
+          { id:'weNeed', icon:'target', title:'Итак, кого мы ищем? Поговорим на чистоту.', html:`<h1>Кого мы ищем</h1><p class="muted">Требования к кандидатам.</p>` },
+          { id:'benefits', icon:'gift', title:'А что взамен?', html:`<h1>Что взамен</h1><p class="muted">Условия, бонусы, обучение.</p>` },
+          { id:'recap', icon:'book', title:'Давайте закрепим', html:`<h1>Давайте закрепим</h1><p class="muted">Краткое резюме.</p>` },
+          { id:'aboutyou', icon:'person', title:'Теперь о вас', html:`<h1>Теперь о вас</h1><p class="muted">Форма/вопросы.</p>` },
+          { id:'next', icon:'arrow', title:'Итак, что дальше?', html:`<h1>Что дальше</h1><p class="muted">Шаги после ознакомления.</p>` }
+        ];
+
+        // Helpers
+        const $ = (id) => document.getElementById(id);
+        const toc = $('toc');
+        const stage = $('stage');
+        const progressN = $('progressN');
+        const progressBar = $('progressBar');
+        if(!toc || !stage || !progressN || !progressBar){
+          throw new Error('Не найдены ключевые элементы интерфейса (toc/stage/progress).');
+        }
+
+        // localStorage
+        const STEP_KEY = 've_demo_step';
+        const READ_KEY = 've_demo_readSteps';
+        const getReadSet = () => {
+          try { return new Set(JSON.parse(localStorage.getItem(READ_KEY) || '[]')); } catch { return new Set(); }
+        };
+        const setReadSet = (set) => {
+          try { localStorage.setItem(READ_KEY, JSON.stringify(Array.from(set))); } catch {}
+        };
+        const isStepRead = (i) => getReadSet().has(i);
+        const markStepRead = (i) => { const s = getReadSet(); if(!s.has(i)){ s.add(i); setReadSet(s); updateReadBadges(); }};
+
+        // Menu
+        steps.forEach((s, i)=>{
+          const b = document.createElement('button');
+          b.type='button';
+          b.dataset.index=i;
+          b.setAttribute('data-testid', 'toc-item-'+i);
+          b.innerHTML = `<span class="icon">${icon(s.icon)}</span><span class="text">${s.title}</span>`;
+          b.addEventListener('click',()=> gotoStep(i));
+          toc.appendChild(b);
+        });
+        function updateReadBadges(){
+          const rs = getReadSet();
+          Array.from(toc.children).forEach((el,i)=>{
+            el.setAttribute('data-read', rs.has(i) ? '1' : '0');
+          });
+        }
+
+        // Progress by steps
+        function updateProgress(val){
+          val = Math.max(0, Math.min(100, Number(val)||0));
+          progressN.textContent = val + '%';
+          progressBar.style.width = val + '%';
+        }
+
+        function updateNextDisabled(index){
+          const next = $('nextBtn');
+          if (!next) return;
+          const last = index === steps.length - 1;
+          next.disabled = !isStepRead(index) && !last;
+        }
+
+        // Render step
+        function renderStep(index){
+          const s = steps[index];
+          document.title = s.title + ' — Vysotsky Estate';
+          stage.innerHTML = `
+            <div id="content">${s.html}</div>
+            <div class="hint" id="guardHint" hidden>Прокрутите страницу до конца шага, чтобы активировать «Продолжить».</div>
+            <div class="nav">
+              <div class="bar">
+                <button class="btn ghost" id="prevBtn" data-testid="prev">Назад</button>
+                <button class="btn primary" id="nextBtn" data-testid="next">Продолжить</button>
+              </div>
+            </div>
+          `;
+          const prev = $('prevBtn');
+          const next = $('nextBtn');
+          prev.onclick = ()=> gotoStep(index-1);
+          next.onclick = ()=> gotoStep(index+1);
+          prev.disabled = index === 0;
+
+          // sentinel for scroll guard
+          const nav = stage.querySelector('.nav');
+          const sentinel = document.createElement('div');
+          sentinel.id = 'sentinel';
+          sentinel.style.height = '1px';
+          nav.parentNode.insertBefore(sentinel, nav);
+
+          const guardHint = $('guardHint');
+          if (!isStepRead(index)) guardHint.hidden = false;
+
+          function unlock(){
+            markStepRead(index);
+            guardHint.hidden = true;
+            updateNextDisabled(index);
+            if (observer) observer.disconnect();
+            window.removeEventListener('scroll', onScroll, {passive:true});
+          }
+          const onScroll = ()=>{
+            const r = sentinel.getBoundingClientRect();
+            const vh = window.innerHeight || document.documentElement.clientHeight;
+            if (r.top <= vh) unlock();
+          };
+          let observer = null;
+          try{
+            observer = new IntersectionObserver((entries)=>{
+              if(entries.some(e=>e.isIntersecting)) unlock();
+            }, {threshold: 0.6});
+            observer.observe(sentinel);
+          }catch{}
+          window.addEventListener('scroll', onScroll, {passive:true});
+
+          updateProgress(Math.round(((index+1)/steps.length)*100));
+          Array.from(toc.children).forEach((el,i)=>{
+            el.setAttribute('aria-current', i===index ? 'step' : 'false');
+          });
+          updateReadBadges();
+          updateNextDisabled(index);
+
+          const url = new URL(location.href);
+          url.searchParams.set('step', String(index+1));
+          history.replaceState(null,'',url);
+          try { localStorage.setItem(STEP_KEY, String(index)); } catch {}
+        }
+
+        function gotoStep(i){
+          if (i<0) i=0; if (i>=steps.length) i=steps.length-1; current=i; renderStep(i);
+        }
+
+        // Init
+        let current = 0;
+        const qs = new URLSearchParams(location.search);
+        const qsStep = parseInt(qs.get('step')||'1',10);
+        const saved = parseInt(localStorage.getItem(STEP_KEY)||'0',10);
+        if (!isNaN(qsStep) && qsStep>=1 && qsStep<=steps.length) current = qsStep-1;
+        else if(!isNaN(saved) && saved>=0 && saved<steps.length) current = saved;
+        renderStep(current);
+
+        // Cross-tab sync
+        window.addEventListener('storage', (e)=>{
+          if (e.key === STEP_KEY && e.newValue != null){
+            const idx = parseInt(e.newValue,10);
+            if (!isNaN(idx) && idx !== current){ current = idx; renderStep(current); }
+          }
+          if (e.key === READ_KEY && e.newValue != null){
+            updateReadBadges();
+            updateNextDisabled(current);
+          }
+        });
+
+        // Tests
+        const testBox = $('test-results');
+        function logTest(msg, ok=true){
+          testBox.classList.add('show');
+          const p = document.createElement('div');
+          p.innerHTML = ok ? `✅ <span class="ok">${msg}</span>` : `❌ <span class="fail">${msg}</span>`;
+          testBox.appendChild(p);
+        }
+        function assert(cond, msg){ if(cond){ logTest(msg, true); } else { logTest(msg, false); throw new Error('Test failed: '+msg); } }
+
+        window.__dev_markRead = function(){ markStepRead(current); updateReadBadges(); updateNextDisabled(current); };
+
+        function runTests(){
+          try{
+            assert(!!stage.querySelector('h1'), 'Есть заголовок шага');
+            assert(!!document.getElementById('nextBtn') && !!document.getElementById('prevBtn'), 'Кнопки навигации отрисованы');
+            if (!isStepRead(current)) assert(document.getElementById('nextBtn').disabled, 'Гейтинг по скроллу активен (Next disabled)');
+            const wasDisabled = document.getElementById('nextBtn').disabled;
+            window.__dev_markRead();
+            assert(!document.getElementById('nextBtn').disabled && wasDisabled, 'После отметки «прочитан» Next разблокирован');
+            const expected = Math.round(((current+1)/steps.length)*100) + '%';
+            assert(document.getElementById('progressN').textContent.trim() === expected, 'Процент прогресса корректен ('+expected+')');
+            logTest('Все проверки прошли');
+          }catch(e){ console.error(e); }
+        }
+        const auto = qs.get('runTests') === '1'; if (auto) runTests();
+        window.addEventListener('keydown', e=>{ if(e.key==='F9') runTests(); });
+
+      } catch (err) {
+        console.error(err);
+        const stage = document.getElementById('stage');
+        if(stage){
+          stage.innerHTML = `<div class="callout"><div class="badge">!</div><div>Произошла ошибка инициализации: ${err.message}</div></div>`;
+        }
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+services:
+- type: web
+  name: vysotsky-estate
+  env: static
+  buildCommand: ""
+  staticPublishPath: .
