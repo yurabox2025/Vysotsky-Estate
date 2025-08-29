@@ -312,7 +312,7 @@ header {
 .callout {
   display: flex;
   gap: 16px;
-  align-items: flex-start;
+  align-items: center;
   background: #fff;
   border: 2px solid var(--accent);
   border-radius: 14px;
